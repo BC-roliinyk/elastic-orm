@@ -90,16 +90,16 @@ class BoolQuery implements QueryInterface, BoolQueryInterface
 
     public function addPrefix(string $name, string $value, int $boost): BoolQuery
     {
-
         $inputArray = [
             'prefix' => [
-                "$name.not_analyzed" => [
+                $name => [
                     'value' => $value,
                     'boost' => $boost
                 ]
             ]
         ];
         $this->queryTreeBuilder->addArrayParam($inputArray);
+
         return $this;
     }
 }
