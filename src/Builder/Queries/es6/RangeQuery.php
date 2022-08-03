@@ -8,7 +8,7 @@ class RangeQuery implements QueryInterface
 {
     private string $fieldName;
     private array $fieldValue;
-    private array $modificatorsArray = ['gte', 'lte']; //todo
+    private array $operatorsArray = ['gte', 'lte']; //todo
 
     /**
      * @throws \Exception
@@ -16,10 +16,10 @@ class RangeQuery implements QueryInterface
     public function setRange($fieldName, $fieldValue): RangeQuery
     {
 
-        foreach ($fieldValue as $modificator => $value) {
-            if (!in_array($modificator, $this->modificatorsArray)) {
+        foreach ($fieldValue as $operator => $value) {
+            if (!in_array($operator, $this->operatorsArray)) {
                 throw new \Exception(
-                    "$modificator is not one of " . implode(' ', $this->modificatorsArray)
+                    "$operator is not one of " . implode(' ', $this->operatorsArray)
                 );
             }
             if (!is_int($value)) {

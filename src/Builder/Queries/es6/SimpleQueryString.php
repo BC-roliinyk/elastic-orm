@@ -16,7 +16,7 @@ class SimpleQueryString implements QueryInterface
     public bool $analyzeWildcard = false;
 
 
-    public function setLenient($lenient)
+    public function setLenient(bool $lenient)
     {
         $this->lenient = $lenient;
         return $this;

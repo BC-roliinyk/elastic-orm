@@ -11,7 +11,7 @@ class PrefixQuery implements QueryInterface
     private float $boost;
     private ?array $rawPrefixArray;
 
-    public function setPrefix(string $fieldName, string $fieldValue, int $boost): PrefixQuery
+    public function setPrefix(string $fieldName, string $fieldValue, float $boost): PrefixQuery
     {
         $this->fieldName  = $fieldName;
         $this->fieldValue = $fieldValue;
