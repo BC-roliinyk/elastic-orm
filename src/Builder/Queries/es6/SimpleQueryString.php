@@ -13,6 +13,7 @@ class SimpleQueryString implements QueryInterface
     public bool $lenient = false;
     public string $defaultOperator = self::OR_OPERATOR;
     public QueryTreeBuilder $queryTreeBuilder;
+    public bool $analyzeWildcard = false;
 
 
     public function setLenient($lenient)
@@ -36,14 +37,29 @@ class SimpleQueryString implements QueryInterface
         $this->fields = $fields;
         return $this;
     }
+    public function setAnalyzeWildcard(bool $value)
+    {
+        $this->analyzeWildcard = $value;
+    }
     public function build(): array
     {
-        return ['simple_query_string' =>
-            ['default_operator' => $this->defaultOperator,
-                'lenient' => $lenient ?? true,
-                'query' => $this->query,
-                'fields' => $this->fields
-            ]
-        ];
+        if ($this->analyzeWildcard === true) {
+            return ['simple_query_string' =>
+                ['default_operator' => $this->defaultOperator,
+                    'analyze_wildcard' => $this->analyzeWildcard,
+                    'lenient' => $this->lenient ?? true,
+                    'query' => $this->query,
+                    'fields' => $this->fields
+                ]
+            ];
+        } else {
+            return ['simple_query_string' =>
+                ['default_operator' => $this->defaultOperator,
+                    'lenient' => $this->lenient ?? true,
+                    'query' => $this->query,
+                    'fields' => $this->fields
+                ]
+            ];
+        }
     }
 }

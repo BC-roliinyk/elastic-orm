@@ -8,15 +8,14 @@ class QueryTreeBuilder
 
     public string $queryType;
 
-    public array $prefixArray = [];
 
     public function __construct(string $queryType, ?string $entityType)
     {
-        if (isset($entityType)) {
-            $this->queryType = $queryType;
+        $this->queryType = $queryType;
+        if ($entityType !== null) {
             $this->queryTree['type'] = $entityType;
-            $this->queryTree['query'] = [$queryType => []];
         }
+        $this->queryTree['query'] = [$queryType => []];
     }
 
     public function addParam($paramName, $paramValue)
