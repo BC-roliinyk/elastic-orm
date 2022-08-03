@@ -5,10 +5,31 @@
   "require": {
     "php": ">=7.4"
   },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "*",
+    "phpunit/phpunit": "~9.4.0",
+    "vimeo/psalm": "^4.9",
+    "psalm/plugin-phpunit": "^0.16"
+  },
   "autoload": {
     "psr-4": {
-      "ElasticORM\\": "src/",
+      "ElasticORM\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
       "ElasticORM\\Tests\\": "tests/"
     }
+  },
+  "scripts": {
+    "test": [
+      "@code-style",
+      "@static-analysis",
+      "@phpunit"
+    ],
+    "phpunit": "phpunit --config phpunit.xml",
+    "static-analysis": "psalm --no-cache",
+    "code-style": "phpcs --standard=PSR2 src tests",
+    "fix-code-style": "phpcbf --standard=PSR2 src tests"
   }
 }

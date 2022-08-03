@@ -23,17 +23,15 @@ class TermsQuery implements QueryInterface
      */
     public function build(): array
     {
-        if ('' === $this->fieldName) {
+        if (empty($this->fieldName)) {
             throw new \Exception('Terms field name has to be set');
         }
 
         if ($this->boostValue !== null) {
             return [
                 'terms' => [
-                    $this->fieldName => [
-                        $this->fieldValue,
-                        'boost' => $this->boostValue
-                    ]
+                    $this->fieldName => $this->fieldValue,
+                    'boost' => $this->boostValue
                 ]
             ];
         } else {

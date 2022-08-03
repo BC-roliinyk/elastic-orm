@@ -23,10 +23,10 @@ class TermQuery implements QueryInterface
      */
     public function build(): array
     {
-
-        if ('' === $this->fieldName) {
+        if (empty($this->fieldName)) {
             throw new \Exception('Terms field name has to be set');
         }
+
         if ($this->boostValue !== null) {
             return [
                 'term' => [
@@ -45,4 +45,3 @@ class TermQuery implements QueryInterface
         }
     }
 }
-
