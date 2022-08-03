@@ -2,50 +2,83 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 use ElasticORM\Builder\Factory\QueryFactory;
-$fields = ['id',
-            'name^3',
-            'name.partial',
-            'sku^3',
-            'sku.partial',
-            'upc^3',
-            'keywords^3',
-            'keywords.partial',
-            'brand_name^3'];
+$query = 'something';
+$productSqsFields = [
+    'id',
+    'name^3',
+    'name.partial',
+    'sku^3',
+    'sku.partial',
+    'upc^3',
+    'keywords^3',
+    'keywords.partial',
+    'brand_name^3',
+];
+
+$variantSqsFields = [
+    'sku.not_analyzed^3',
+    'sku.partial',
+    'sku',
+    'gtin',
+];
+
+
+
 
 $queryFactory = QueryFactory::getQueryObjectFactory();
-$boolQuery = $queryFactory->getQueryObject('BoolQuery', 'product');
 
-$boolVariantQuery = $queryFactory->getQueryObject('BoolQuery', 'variant');
+$storeFilter = $queryFactory->getQueryObject('TermQuery');
+$storeFilter->setTerm('store_id', 1000000);
 
-$stringQuery = $queryFactory->getQueryObject('SimpleQueryString')->setQuery('dsfdsf')->setFields($fields);
-$stringVariantQuery = $queryFactory->getQueryObject('SimpleQueryString')->setQuery('tesy3')->setFields($fields);
+$boolQuery = $queryFactory->getQueryObject('BoolQuery', 'master_document');//root query
 
-$boolVariantQuery->addQuery($stringVariantQuery);
+$boolVariantQuery = $queryFactory->getQueryObject('BoolQuery');
 
-$childQuery = $queryFactory->getQueryObject('ChildQuery')->setQuery($boolVariantQuery);
+$variantSqsQuery = $queryFactory
+    ->getQueryObject('SimpleQueryString')
+    ->setQuery($query)
+    ->setLenient(true)
+    ->setDefaultOperator('and')
+    ->setFields($variantSqsFields);
 
-$boolQuery->addQuery($stringQuery);
-$boolQuery->setMinimumShouldMatch(1)
-    ->addShould($childQuery)
-    ->addPrefix('keywords', 'keywords', 1)
-    ->addPrefix('name', 'keywords', 1)
-    ->size(4)
-    ->from(5);
+//fill the variant bool query
+$boolVariantQuery->setMinimumShouldMatch(1);
+$boolVariantQuery->addQuery($variantSqsQuery);
+$boolVariantQuery->addQuery($storeFilter);
+
+//set variant bool query as child
+$childQuery = $queryFactory->getQueryObject('ChildQuery')
+    ->setQuery($boolVariantQuery)
+    ->setType('variant')
+    ->setScoreMode('max');
 
 
-$channelFilterQuery = $queryFactory->getQueryObject('TermQuery');
-$channelFilterQuery->setTerm('channel_id', 2);
+$productSqsQuery = $queryFactory
+    ->getQueryObject('SimpleQueryString')
+    ->setQuery($query)
+    ->setLenient(true)
+    ->setDefaultOperator('and')
+    ->setFields($productSqsFields);
 
-$categoriesQuery = $queryFactory->getQueryObject('TermsQuery');
-$categoriesQuery->setTerms('categories', [1,2,3]);
+$documentTypeFilter = $queryFactory->getQueryObject('TermQuery');
+$documentTypeFilter->setTerm('document_type', 'product');
 
 
-$boolQuery->addFilter($channelFilterQuery);
-$boolQuery->addFilter($categoriesQuery);
 
-$rangeQuery = $queryFactory->getQueryObject('RangeQuery');
-$rangeQuery->setRange('price', ['gte' => 'ff', 'lte' => 5]);
+//set root query
+$boolQuery->setMinimumShouldMatch(1);
+$boolQuery->addShould($childQuery);
+$boolQuery->addQuery($productSqsQuery);
+$boolQuery->addQuery($documentTypeFilter);
+$boolQuery->addQuery($storeFilter);
+$boolQuery->addPrefix('sku.not_analyzed', $query, 2);
+$boolQuery->addPrefix('keywords.not_analyzed', $query, 1);
+$boolQuery->addPrefix('name.not_analyzed', $query, 1);
+$boolQuery->from(10);
+$boolQuery->size(10);
+$boolQuery->sort(['id']);
 
-$boolQuery->addQuery($rangeQuery);
+
+
 
 print_r($boolQuery->build());
