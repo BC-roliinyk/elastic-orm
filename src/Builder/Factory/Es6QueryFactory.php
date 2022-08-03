@@ -5,7 +5,8 @@ namespace ElasticORM\Builder\Factory;
 use ElasticORM\Builder\Interfaces\QueryFactoryInterface;
 use ElasticORM\Builder\Interfaces\QueryInterface;
 use ElasticORM\Builder\Queries\es6\BoolQuery;
-use ElasticORM\Builder\Queries\es6\ChildQuery;
+use ElasticORM\Builder\Queries\es6\HasChildQuery;
+use ElasticORM\Builder\Queries\es6\HasParentQuery;
 use ElasticORM\Builder\Queries\es6\SimpleQueryString;
 use ElasticORM\Builder\Queries\es6\TermQuery;
 use ElasticORM\Builder\Queries\es6\TermsQuery;
@@ -22,14 +23,16 @@ class Es6QueryFactory implements QueryFactoryInterface
                 return new BoolQuery($queryTreeBuilder);
             case 'SimpleQueryString':
                 return new SimpleQueryString();
-            case 'ChildQuery':
-                return new ChildQuery();
             case 'TermQuery':
                 return new TermQuery();
             case 'TermsQuery':
                 return new TermsQuery();
             case 'RangeQuery':
                 return new RangeQuery();
+            case 'HasChildQuery':
+                return new HasChildQuery();
+            case 'HasParentQuery':
+                return new HasParentQuery();
         }
         return new BoolQuery($queryTreeBuilder);
     }
