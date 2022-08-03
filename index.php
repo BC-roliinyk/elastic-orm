@@ -81,4 +81,4 @@ $boolQuery->sort(['id']);
 
 
 
-print_r($boolQuery->build());
+var_dump($boolQuery->build());
