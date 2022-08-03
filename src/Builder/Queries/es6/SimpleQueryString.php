@@ -10,7 +10,7 @@ class SimpleQueryString implements QueryInterface
     public const OR_OPERATOR = 'or';
     public string $query;
     public array $fields;
-    public bool $lenient = false;
+    public bool $lenient = true;
     public string $defaultOperator = self::OR_OPERATOR;
     public QueryTreeBuilder $queryTreeBuilder;
     public bool $analyzeWildcard = false;
@@ -47,7 +47,7 @@ class SimpleQueryString implements QueryInterface
             return ['simple_query_string' =>
                 ['default_operator' => $this->defaultOperator,
                     'analyze_wildcard' => $this->analyzeWildcard,
-                    'lenient' => $this->lenient ?? true,
+                    'lenient' => $this->lenient,
                     'query' => $this->query,
                     'fields' => $this->fields
                 ]
@@ -55,7 +55,7 @@ class SimpleQueryString implements QueryInterface
         } else {
             return ['simple_query_string' =>
                 ['default_operator' => $this->defaultOperator,
-                    'lenient' => $this->lenient ?? true,
+                    'lenient' => $this->lenient,
                     'query' => $this->query,
                     'fields' => $this->fields
                 ]

@@ -15,7 +15,7 @@ class SimpleQueryStringTest extends TestCase
             'simple_query_string' => [
                 'default_operator' => 'foo',
                 'analyze_wildcard' => true,
-                'lenient' => true,
+                'lenient' => false,
                 'query' => 'baz',
                 'fields' => ['quux']
             ]
@@ -23,7 +23,7 @@ class SimpleQueryStringTest extends TestCase
 
         $query = new SimpleQueryString();
         $query->setDefaultOperator('foo')
-            ->setLenient(true)
+            ->setLenient(false)
             ->setQuery('baz')
             ->setFields(['quux'])
             ->setAnalyzeWildcard(true);
@@ -36,7 +36,7 @@ class SimpleQueryStringTest extends TestCase
         $expected = [
             'simple_query_string' => [
                 'default_operator' => 'or',
-                'lenient' => false,
+                'lenient' => true,
                 'query' => 'foo',
                 'fields' => ['bar']
             ]

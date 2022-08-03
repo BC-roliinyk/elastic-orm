@@ -5,7 +5,7 @@ namespace ElasticORM\Builder\Queries\es6;
 use ElasticORM\Builder\Interfaces\BoolQueryInterface;
 use ElasticORM\Builder\Interfaces\QueryInterface;
 use ElasticORM\Builder\QueryTreeBuilder;
-use mysql_xdevapi\Exception;
+use Exception;
 
 class BoolQuery implements QueryInterface, BoolQueryInterface
 {
@@ -30,10 +30,10 @@ class BoolQuery implements QueryInterface, BoolQueryInterface
         $this->addQuery($query);
         return $this;
     }
-    public function addFilter(QueryInterface $termQuery)
+    public function addFilter(QueryInterface $query)
     {
         try {
-            $this->queryTreeBuilder->addArrayParam($termQuery->build());
+            $this->queryTreeBuilder->addArrayParam($query->build());
         } catch (Exception $exception) {
         }
     }
