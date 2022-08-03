@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 use ElasticORM\Builder\Factory\QueryFactory;
+use ElasticORM\Builder\Queries\es6\HasChildQuery;
+
 $query = 'something';
 $productSqsFields = [
     'id',
@@ -47,10 +49,10 @@ $boolVariantQuery->addQuery($variantSqsQuery);
 $boolVariantQuery->addQuery($storeFilter);
 
 //set variant bool query as child
-$childQuery = $queryFactory->getQueryObject('ChildQuery')
+$hasChildQuery = $queryFactory->getQueryObject('HasChildQuery')
     ->setQuery($boolVariantQuery)
     ->setType('variant')
-    ->setScoreMode('max');
+    ->setScoreMode(HasChildQuery::SCORE_MODE_MAX);
 
 
 $productSqsQuery = $queryFactory
@@ -67,7 +69,7 @@ $documentTypeFilter->setTerm('document_type', 'product');
 
 //set root query
 $boolQuery->setMinimumShouldMatch(1);
-$boolQuery->addShould($childQuery);
+$boolQuery->addShould($hasChildQuery);
 $boolQuery->addQuery($productSqsQuery);
 $boolQuery->addQuery($documentTypeFilter);
 $boolQuery->addQuery($storeFilter);
