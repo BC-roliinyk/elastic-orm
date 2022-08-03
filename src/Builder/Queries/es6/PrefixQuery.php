@@ -19,9 +19,8 @@ class PrefixQuery implements QueryInterface
         return $this;
     }
 
-    public function setRawPrefix (array $prefix): PrefixQuery
+    public function setRawPrefix(array $prefix): PrefixQuery
     {
-
         return $this;
     }
     public function build(): array
