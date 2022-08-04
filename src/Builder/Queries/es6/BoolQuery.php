@@ -20,12 +20,13 @@ class BoolQuery implements QueryInterface, BoolQueryInterface
     {
         return $this->queryTreeBuilder->getTree();
     }
-    public function addShould(QueryInterface $query)
+    public function addShould(QueryInterface $query): BoolQuery
     {
-        $this->addQuery($query);
+
+        $this->queryTreeBuilder->addShould($query->build());
         return $this;
     }
-    public function addMust(QueryInterface $query)
+    public function addMust(QueryInterface $query): BoolQuery
     {
         $this->addQuery($query);
         return $this;
@@ -37,7 +38,7 @@ class BoolQuery implements QueryInterface, BoolQueryInterface
         } catch (Exception $exception) {
         }
     }
-    public function addMustNot(QueryInterface $query)
+    public function addMustNot(QueryInterface $query): BoolQuery
     {
         $this->addQuery($query);
         return $this;
@@ -46,12 +47,12 @@ class BoolQuery implements QueryInterface, BoolQueryInterface
     {
         // TODO: Implement sort() method.
     }
-    public function size($value)
+    public function size($value): BoolQuery
     {
         $this->queryTreeBuilder->addRootParameter('size', $value);
         return $this;
     }
-    public function from($value)
+    public function from($value): BoolQuery
     {
         $this->queryTreeBuilder->addRootParameter('from', $value);
         return $this;
@@ -88,7 +89,7 @@ class BoolQuery implements QueryInterface, BoolQueryInterface
         return $this;
     }
 
-    public function addPrefix(string $name, string $value, int $boost): BoolQuery
+   /* public function addPrefix(string $name, string $value, int $boost): BoolQuery
     {
         $inputArray = [
             'prefix' => [
@@ -101,5 +102,5 @@ class BoolQuery implements QueryInterface, BoolQueryInterface
         $this->queryTreeBuilder->addArrayParam($inputArray);
 
         return $this;
-    }
+    }*/
 }

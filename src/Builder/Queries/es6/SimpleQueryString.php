@@ -16,30 +16,31 @@ class SimpleQueryString implements QueryInterface
     public bool $analyzeWildcard = false;
 
 
-    public function setLenient(bool $lenient)
+    public function setLenient(bool $lenient): SimpleQueryString
     {
         $this->lenient = $lenient;
         return $this;
     }
-    public function setDefaultOperator(string $operator)
+    public function setDefaultOperator(string $operator): SimpleQueryString
     {
         $this->defaultOperator = $operator;
         return $this;
     }
 
-    public function setQuery(string $query)
+    public function setQuery(string $query): SimpleQueryString
     {
         $this->query = $query;
         return $this;
     }
-    public function setFields(array $fields)
+    public function setFields(array $fields): SimpleQueryString
     {
         $this->fields = $fields;
         return $this;
     }
-    public function setAnalyzeWildcard(bool $value)
+    public function setAnalyzeWildcard(bool $value): SimpleQueryString
     {
         $this->analyzeWildcard = $value;
+        return $this;
     }
     public function build(): array
     {
@@ -63,3 +64,4 @@ class SimpleQueryString implements QueryInterface
         }
     }
 }
+

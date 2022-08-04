@@ -30,11 +30,18 @@ class QueryTreeBuilder
 
     public function getTree(): array
     {
-
         return $this->queryTree;
     }
     public function addRootParameter($parameter, $value)
     {
         $this->queryTree['query'][$parameter] = $value;
+    }
+
+    /**
+     * @return array
+     */
+    public function addShould(array $array)
+    {
+        $this->queryTree['query'][$this->queryType]['should'][] = $array;
     }
 }
