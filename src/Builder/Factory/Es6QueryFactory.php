@@ -5,13 +5,19 @@ namespace ElasticORM\Builder\Factory;
 use ElasticORM\Builder\Interfaces\QueryFactoryInterface;
 use ElasticORM\Builder\Interfaces\QueryInterface;
 use ElasticORM\Builder\Queries\es6\BoolQuery;
+use ElasticORM\Builder\Queries\es6\DecayFunction;
+use ElasticORM\Builder\Queries\es6\FieldValueFactorFunction;
+use ElasticORM\Builder\Queries\es6\FunctionScoreQuery;
 use ElasticORM\Builder\Queries\es6\HasChildQuery;
 use ElasticORM\Builder\Queries\es6\HasParentQuery;
 use ElasticORM\Builder\Queries\es6\PrefixQuery;
+use ElasticORM\Builder\Queries\es6\RandomScoreFunction;
+use ElasticORM\Builder\Queries\es6\ScriptScoreFunction;
 use ElasticORM\Builder\Queries\es6\SimpleQueryString;
 use ElasticORM\Builder\Queries\es6\TermQuery;
 use ElasticORM\Builder\Queries\es6\TermsQuery;
 use ElasticORM\Builder\Queries\es6\RangeQuery;
+use ElasticORM\Builder\Queries\es6\WeightFunction;
 use ElasticORM\Builder\QueryTreeBuilder;
 
 class Es6QueryFactory implements QueryFactoryInterface
@@ -39,6 +45,18 @@ class Es6QueryFactory implements QueryFactoryInterface
                 return new HasParentQuery();
             case 'PrefixQuery':
                 return new PrefixQuery();
+            case 'FunctionScoreQuery':
+                return new FunctionScoreQuery();
+            case 'DecayFunction':
+                return new DecayFunction();
+            case 'FieldValueFactorFunction':
+                return new FieldValueFactorFunction();
+            case 'RandomScoreFunction':
+                return new RandomScoreFunction();
+            case 'ScriptScoreFunction':
+                return new ScriptScoreFunction();
+            case 'WeightFunction':
+                return new WeightFunction();
             default:
                 throw new \Exception('Query Class' . $queryType . 'not found');
         }
