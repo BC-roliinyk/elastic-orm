@@ -9,13 +9,17 @@ class QueryTreeBuilder
     public string $queryType;
 
 
-    public function __construct(string $queryType, ?string $entityType)
+    public function __construct(string $queryType, bool $addAsQuery, ?string $entityType)
     {
         $this->queryType = $queryType;
         if ($entityType !== null) {
             $this->queryTree['type'] = $entityType;
         }
-        $this->queryTree['query'] = [$queryType => []];
+        if($addAsQuery == false) {
+            $this->queryTree['query'] = [$queryType => []];
+        } else {
+            $this->queryTree[] = [$queryType => []];
+        }
     }
 
     public function addParam($paramName, $paramValue)
@@ -26,6 +30,11 @@ class QueryTreeBuilder
     public function addArrayParam($array)
     {
         $this->queryTree['query'][$this->queryType][] = $array;
+    }
+
+    public function addNonQueryArrayParam($array)
+    {
+        $this->queryTree[] = $array;
     }
 
     public function getTree(): array

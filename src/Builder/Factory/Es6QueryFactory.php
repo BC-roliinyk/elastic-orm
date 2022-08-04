@@ -10,6 +10,9 @@ use ElasticORM\Builder\Queries\es6\FieldValueFactorFunction;
 use ElasticORM\Builder\Queries\es6\FunctionScoreQuery;
 use ElasticORM\Builder\Queries\es6\HasChildQuery;
 use ElasticORM\Builder\Queries\es6\HasParentQuery;
+use ElasticORM\Builder\Queries\es6\PostFilterQuery;
+use ElasticORM\Builder\Queries\es6\MustQuery;
+use ElasticORM\Builder\Queries\es6\MustNotQuery;
 use ElasticORM\Builder\Queries\es6\PrefixQuery;
 use ElasticORM\Builder\Queries\es6\RandomScoreFunction;
 use ElasticORM\Builder\Queries\es6\ScriptScoreFunction;
@@ -43,6 +46,12 @@ class Es6QueryFactory implements QueryFactoryInterface
                 return new HasChildQuery();
             case 'HasParentQuery':
                 return new HasParentQuery();
+            case 'PostFilterQuery':
+                return new PostFilterQuery();
+            case 'MustQuery':
+                return new MustQuery();
+            case 'MustNotQuery':
+                return new MustNotQuery();
             case 'PrefixQuery':
                 return new PrefixQuery();
             case 'FunctionScoreQuery':
@@ -60,14 +69,15 @@ class Es6QueryFactory implements QueryFactoryInterface
             default:
                 throw new \Exception('Query Class' . $queryType . 'not found');
         }
+        return new BoolQuery($queryTreeBuilder);
     }
 
     public function getQueryTreeBuilderObject(string $queryType, ?string $entityType): QueryTreeBuilder
     {
         switch ($queryType) {
             case 'BoolQuery':
-                return new QueryTreeBuilder('bool', $entityType);
+                return new QueryTreeBuilder('bool', true, $entityType);
         }
-        return new QueryTreeBuilder($queryType, $entityType);
+        return new QueryTreeBuilder($queryType, true, $entityType);
     }
 }
