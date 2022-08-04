@@ -7,6 +7,7 @@ use ElasticORM\Builder\Interfaces\QueryInterface;
 use ElasticORM\Builder\Queries\es6\BoolQuery;
 use ElasticORM\Builder\Queries\es6\HasChildQuery;
 use ElasticORM\Builder\Queries\es6\HasParentQuery;
+use ElasticORM\Builder\Queries\es6\PrefixQuery;
 use ElasticORM\Builder\Queries\es6\SimpleQueryString;
 use ElasticORM\Builder\Queries\es6\TermQuery;
 use ElasticORM\Builder\Queries\es6\TermsQuery;
@@ -15,6 +16,9 @@ use ElasticORM\Builder\QueryTreeBuilder;
 
 class Es6QueryFactory implements QueryFactoryInterface
 {
+    /**
+     * @throws \Exception
+     */
     public function getQueryObject(string $queryType, string $entityType = null): QueryInterface
     {
         $queryTreeBuilder = $this->getQueryTreeBuilderObject($queryType, $entityType);
@@ -33,8 +37,11 @@ class Es6QueryFactory implements QueryFactoryInterface
                 return new HasChildQuery();
             case 'HasParentQuery':
                 return new HasParentQuery();
+            case 'PrefixQuery':
+                return new PrefixQuery();
+            default:
+                throw new \Exception('Query Class' . $queryType . 'not found');
         }
-        return new BoolQuery($queryTreeBuilder);
     }
 
     public function getQueryTreeBuilderObject(string $queryType, ?string $entityType): QueryTreeBuilder
