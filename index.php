@@ -173,6 +173,7 @@ $boolQuery->size(10);
 $boolQuery->sort(['id']);
 
 
+
 //----------------start customer query
 $customerBoolQuery = $queryFactory->getQueryObject('BoolQuery', 'master_document');
 $customerBoolQuery->setMinimumShouldMatch(1);
@@ -396,7 +397,23 @@ $orderBoolQuery->from(10);
 $orderBoolQuery->size(10);
 $orderBoolQuery->sort(['id']);
 
+//start post filter query
+$postFilterQuery = $queryFactory->getQueryObject('PostFilterQuery');
+$postFilterBoolQuery = $queryFactory->getQueryObject('BoolQuery');
+$postFilterBoolQueryIncomplete = $queryFactory->getQueryObject('BoolQuery');
+$incompleteTermQuery = $queryFactory->getQueryObject('TermQuery')
+    ->setTerm('status.not_analyzed', 'incomplete', 1);
+$postFilterBoolQueryIncomplete->addMustNot($incompleteTermQuery);
+$postFilterBoolQuery->addMust($postFilterBoolQueryIncomplete);
+$postFilterBoolQueryIsDeleted = $queryFactory->getQueryObject('BoolQuery');
+$isDeletedTermQuery = $queryFactory->getQueryObject('TermQuery')
+    ->setTerm('is_deleted', true, 1);
+$postFilterBoolQueryIsDeleted->addMustNot($isDeletedTermQuery);
+$postFilterBoolQuery->addMust($postFilterBoolQueryIsDeleted);
+$postFilterQuery->setQuery($postFilterBoolQuery);
+//end post filter query
 
 var_dump($boolQuery->build());
 var_dump($customerBoolQuery->build());
+var_dump($postFilterQuery->build());
 var_dump($orderBoolQuery->build());

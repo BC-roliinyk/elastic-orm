@@ -10,6 +10,7 @@ use ElasticORM\Builder\Queries\es6\FieldValueFactorFunction;
 use ElasticORM\Builder\Queries\es6\FunctionScoreQuery;
 use ElasticORM\Builder\Queries\es6\HasChildQuery;
 use ElasticORM\Builder\Queries\es6\HasParentQuery;
+use ElasticORM\Builder\Queries\es6\PostFilterQuery;
 use ElasticORM\Builder\Queries\es6\PrefixQuery;
 use ElasticORM\Builder\Queries\es6\RandomScoreFunction;
 use ElasticORM\Builder\Queries\es6\ScriptScoreFunction;
@@ -43,6 +44,8 @@ class Es6QueryFactory implements QueryFactoryInterface
                 return new HasChildQuery();
             case 'HasParentQuery':
                 return new HasParentQuery();
+            case 'PostFilterQuery':
+                return new PostFilterQuery();
             case 'PrefixQuery':
                 return new PrefixQuery();
             case 'FunctionScoreQuery':
