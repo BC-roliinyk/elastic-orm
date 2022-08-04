@@ -3,42 +3,49 @@
 namespace ElasticORM\Builder\Queries\es6;
 
 use ElasticORM\Builder\Interfaces\QueryInterface;
-use ElasticORM\Exception\MissingRequiredFieldException;
 
 class HasParentQuery implements QueryInterface
 {
-    private string $parentType;
-    private QueryInterface $query;
-
-    private ?bool $score = null;
-    private ?bool $ignoreUnmapped = null;
-
     private const REQUIRED_FIELDS = [
         'parentType',
         'query',
     ];
 
+    private const VALID_FIELD_VALUES = [];
+
+    private string $parentType;
+    private QueryInterface $query;
+    private ?bool $score = null;
+    private ?bool $ignoreUnmapped = null;
+
+    use ArrayFilterTrait;
+    use ValidateTrait;
+
     public function setParentType(string $parentType): self
     {
         $this->parentType = $parentType;
+
         return $this;
     }
 
     public function setQuery(QueryInterface $query): self
     {
         $this->query = $query;
+
         return $this;
     }
 
     public function setScore(bool $score): self
     {
         $this->score = $score;
+
         return $this;
     }
 
     public function setIgnoreUnmapped(bool $ignoreUnmapped): self
     {
         $this->ignoreUnmapped = $ignoreUnmapped;
+
         return $this;
     }
 
@@ -47,25 +54,14 @@ class HasParentQuery implements QueryInterface
         $this->validate();
 
         return [
-            'has_parent' => array_merge(
+            'has_parent' => $this->filter(
                 [
                     'parent_type' => $this->parentType,
                     'query' => $this->query->build(),
+                    'score' => $this->score,
+                    'ignore_unmapped' => $this->ignoreUnmapped,
                 ],
-                is_null($this->score) ? [] : ['score' => $this->score],
-                is_null($this->ignoreUnmapped) ? [] : ['ignore_unmapped' => $this->ignoreUnmapped]
-            )
+            ),
         ];
-    }
-
-    private function validate()
-    {
-        $queryType = basename(str_replace('\\', '/', self::class));
-
-        foreach (self::REQUIRED_FIELDS as $requiredField) {
-            if (empty($this->$requiredField)) {
-                throw new MissingRequiredFieldException($queryType, $requiredField);
-            }
-        }
     }
 }
