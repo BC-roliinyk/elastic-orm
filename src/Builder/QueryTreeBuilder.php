@@ -37,11 +37,18 @@ class QueryTreeBuilder
         $this->queryTree['query'][$parameter] = $value;
     }
 
-    /**
-     * @return array
-     */
     public function addShould(array $array)
     {
         $this->queryTree['query'][$this->queryType]['should'][] = $array;
+    }
+
+    public function addMust(array $array)
+    {
+        $this->queryTree['query'][$this->queryType]['must'][] = $array;
+    }
+
+    public function addMustNot(array $array)
+    {
+        $this->queryTree['query'][$this->queryType]['must_not'][] = $array;
     }
 }

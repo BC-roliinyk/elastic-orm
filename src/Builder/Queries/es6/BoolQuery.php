@@ -22,13 +22,12 @@ class BoolQuery implements QueryInterface, BoolQueryInterface
     }
     public function addShould(QueryInterface $query): BoolQuery
     {
-
         $this->queryTreeBuilder->addShould($query->build());
         return $this;
     }
     public function addMust(QueryInterface $query): BoolQuery
     {
-        $this->addQuery($query);
+        $this->queryTreeBuilder->addMust($query->build());
         return $this;
     }
     public function addFilter(QueryInterface $query)
@@ -40,7 +39,7 @@ class BoolQuery implements QueryInterface, BoolQueryInterface
     }
     public function addMustNot(QueryInterface $query): BoolQuery
     {
-        $this->addQuery($query);
+        $this->queryTreeBuilder->addMustNot($query->build());
         return $this;
     }
     public function sort($array)
