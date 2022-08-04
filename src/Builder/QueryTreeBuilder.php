@@ -51,4 +51,9 @@ class QueryTreeBuilder
     {
         $this->queryTree['query'][$this->queryType]['must_not'][] = $array;
     }
+
+    public function addFilter(array $array)
+    {
+        $this->queryTree['query'][$this->queryType]['filter'][] = $array;
+    }
 }

@@ -33,7 +33,7 @@ class BoolQuery implements QueryInterface, BoolQueryInterface
     public function addFilter(QueryInterface $query)
     {
         try {
-            $this->queryTreeBuilder->addArrayParam($query->build());
+            $this->queryTreeBuilder->addFilter($query->build());
         } catch (Exception $exception) {
         }
     }
