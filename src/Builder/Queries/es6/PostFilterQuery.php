@@ -8,34 +8,23 @@ use ElasticORM\Builder\QueryTreeBuilder;
 class PostFilterQuery implements QueryInterface
 {
     public QueryTreeBuilder $queryTreeBuilder;
-    private string $fieldName;
-    private $fieldValue;
 
     public function __construct()
     {
-        $this->queryTreeBuilder = new QueryTreeBuilder('post_filter', false, null);
+        $this->queryTreeBuilder = new QueryTreeBuilder('post_filter',null);
     }
 
-    public function addNonQueryArrayParam(QueryInterface $query)
+    public function addQuery(QueryInterface $query)
     {
         try {
-            $this->queryTreeBuilder->addNonQueryArrayParam($query->build());
+            $this->queryTreeBuilder->addArrayParam($query->build());
         } catch (Exception $exception) {
         }
     }
 
     public function build(): array
     {
-        return ['post_filter' => [
-            $this->fieldName => $this->fieldValue
-        ]];
+        return $this->queryTreeBuilder->getTree();
     }
 
-    public function setFieldName(string $field) {
-        $this->fieldName = $field;
-    }
-
-    public function setFieldValue($value) {
-        $this->fieldValue = $value;
-    }
 }

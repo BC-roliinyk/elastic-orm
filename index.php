@@ -172,22 +172,7 @@ $boolQuery->from(10);
 $boolQuery->size(10);
 $boolQuery->sort(['id']);
 
-$mustNotTermIncomplete = $queryFactory->getQueryObject('MustNotQuery');
-$mustNotTermIncomplete->addQuery($queryFactory->getQueryObject('TermQuery')
-    ->setTerm('status.not_analyzed', 'incomplete', 1));
-$mustNotTermIsDeleted = $queryFactory->getQueryObject('MustNotQuery');
-$mustNotTermIsDeleted->addQuery($queryFactory->getQueryObject('TermQuery')
-    ->setTerm('is_deleted', true, 1));
-$boolIncomplete = $queryFactory->getQueryObject('BoolQuery');
-$boolIsDeleted = $queryFactory->getQueryObject('BoolQuery');
-$boolIncomplete->addQuery($mustNotTermIncomplete);
-$boolIsDeleted->addQuery($mustNotTermIsDeleted);
-$mustQuery = $queryFactory->getQueryObject('MustQuery');
-$mustQuery->addQuery($boolIncomplete);
-$mustQuery->addQuery($boolIsDeleted);
-$postFilterQuery = $queryFactory->getQueryObject('PostFilterQuery');
-$postFilterQuery->setFieldName('bool');
-$postFilterQuery->setFieldValue($mustQuery->build());
+
 
 //----------------start customer query
 $customerBoolQuery = $queryFactory->getQueryObject('BoolQuery', 'master_document');
@@ -412,8 +397,22 @@ $orderBoolQuery->from(10);
 $orderBoolQuery->size(10);
 $orderBoolQuery->sort(['id']);
 
+//start post filter query
+$postFilterQuery = $queryFactory->getQueryObject('PostFilterQuery');
+$postFilterBoolQuery = $queryFactory->getQueryObject('BoolQuery');
+$postFilterBoolQueryIncomplete = $queryFactory->getQueryObject('BoolQuery');
+$incompleteTermQuery = $queryFactory->getQueryObject('TermQuery')
+    ->setTerm('status.not_analyzed', 'incomplete', 1);
+$postFilterBoolQueryIncomplete->addMustNot($incompleteTermQuery);
+$postFilterBoolQuery->addMust($postFilterBoolQueryIncomplete);
+$postFilterBoolQueryIsDeleted = $queryFactory->getQueryObject('BoolQuery');
+$isDeletedTermQuery = $queryFactory->getQueryObject('TermQuery')
+    ->setTerm('is_deleted', true, 1);
+$postFilterBoolQueryIsDeleted->addMustNot($isDeletedTermQuery);
+$postFilterBoolQuery->addMust($postFilterBoolQueryIsDeleted);
+$postFilterQuery->addQuery($postFilterBoolQuery);
 $boolQuery->addQuery($postFilterQuery);
-print_r($boolQuery->build());
+
 
 var_dump($boolQuery->build());
 var_dump($customerBoolQuery->build());

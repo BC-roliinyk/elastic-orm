@@ -65,14 +65,6 @@ class BoolQuery implements QueryInterface, BoolQueryInterface
         }
     }
 
-    public function addNonQueryArrayParam(QueryInterface $query)
-    {
-        try {
-            $this->queryTreeBuilder->addNonQueryArrayParam($query->build());
-        } catch (Exception $exception) {
-        }
-    }
-
     /*public function addSimpleQuery(
         string $query,
         array $fields,
