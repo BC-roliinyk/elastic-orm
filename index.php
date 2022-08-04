@@ -411,7 +411,7 @@ $isDeletedTermQuery = $queryFactory->getQueryObject('TermQuery')
 $postFilterBoolQueryIsDeleted->addMustNot($isDeletedTermQuery);
 $postFilterBoolQuery->addMust($postFilterBoolQueryIsDeleted);
 $postFilterQuery->setQuery($postFilterBoolQuery);
-
+//end post filter query
 
 var_dump($boolQuery->build());
 var_dump($customerBoolQuery->build());

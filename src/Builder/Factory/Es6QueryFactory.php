@@ -63,7 +63,6 @@ class Es6QueryFactory implements QueryFactoryInterface
             default:
                 throw new \Exception('Query Class' . $queryType . 'not found');
         }
-        return new BoolQuery($queryTreeBuilder);
     }
 
     public function getQueryTreeBuilderObject(string $queryType, ?string $entityType): QueryTreeBuilder

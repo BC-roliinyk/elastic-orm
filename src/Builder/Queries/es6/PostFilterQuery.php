@@ -34,7 +34,7 @@ class PostFilterQuery implements QueryInterface
         if ($this->validate()) {
             return [
                 'post_filter' => [
-                    $this->query ? [$this->query->build()] : $this->rawProperty
+                    isset($this->query) ? [$this->query->build()] : $this->rawProperty
                 ]
             ];
         }
