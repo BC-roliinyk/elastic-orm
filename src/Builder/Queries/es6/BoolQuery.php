@@ -42,20 +42,6 @@ class BoolQuery implements QueryInterface, BoolQueryInterface
         $this->queryTreeBuilder->addMustNot($query->build());
         return $this;
     }
-    public function sort($array)
-    {
-        // TODO: Implement sort() method.
-    }
-    public function size($value): BoolQuery
-    {
-        $this->queryTreeBuilder->addRootParameter('size', $value);
-        return $this;
-    }
-    public function from($value): BoolQuery
-    {
-        $this->queryTreeBuilder->addRootParameter('from', $value);
-        return $this;
-    }
 
     public function addQuery(QueryInterface $query)
     {

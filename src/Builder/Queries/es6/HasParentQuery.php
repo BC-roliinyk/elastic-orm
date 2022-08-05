@@ -21,6 +21,22 @@ class HasParentQuery implements QueryInterface
     use ArrayFilterTrait;
     use ValidateTrait;
 
+    public function build(): array
+    {
+        $this->validate();
+
+        return $this->filter(
+            [
+                'has_parent' => [
+                    'parent_type' => $this->parentType,
+                    'query' => $this->query->build(),
+                    'score' => $this->score,
+                    'ignore_unmapped' => $this->ignoreUnmapped,
+                ],
+            ]
+        );
+    }
+
     public function setParentType(string $parentType): self
     {
         $this->parentType = $parentType;
@@ -47,21 +63,5 @@ class HasParentQuery implements QueryInterface
         $this->ignoreUnmapped = $ignoreUnmapped;
 
         return $this;
-    }
-
-    public function build(): array
-    {
-        $this->validate();
-
-        return [
-            'has_parent' => $this->filter(
-                [
-                    'parent_type' => $this->parentType,
-                    'query' => $this->query->build(),
-                    'score' => $this->score,
-                    'ignore_unmapped' => $this->ignoreUnmapped,
-                ],
-            ),
-        ];
     }
 }

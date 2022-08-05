@@ -4,34 +4,32 @@ namespace ElasticORM\Builder\Queries\es6;
 
 use ElasticORM\Builder\Interfaces\QueryInterface;
 
-class HasChildQuery implements QueryInterface
+class Rescore implements QueryInterface
 {
-    public const SCORE_MODE_NONE = 'none';
+    public const SCORE_MODE_TOTAL = 'total';
+    public const SCORE_MODE_MULTIPLY = 'multiply';
     public const SCORE_MODE_AVG = 'avg';
     public const SCORE_MODE_MAX = 'max';
     public const SCORE_MODE_MIN = 'min';
-    public const SCORE_MODE_SUM = 'sum';
 
     private const REQUIRED_FIELDS = [
-        'type',
         'query',
     ];
 
     private const VALID_FIELD_VALUES = [
         'scoreMode' => [
-            self::SCORE_MODE_NONE,
+            self::SCORE_MODE_TOTAL,
+            self::SCORE_MODE_MULTIPLY,
             self::SCORE_MODE_AVG,
             self::SCORE_MODE_MAX,
             self::SCORE_MODE_MIN,
-            self::SCORE_MODE_SUM,
         ],
     ];
 
-    private string $type;
     private QueryInterface $query;
-    private ?bool $ignoreUnmapped = null;
-    private ?int $maxChildren = null;
-    private ?int $minChildren = null;
+    private ?int $windowSize = null;
+    private ?float $queryWeight = null;
+    private ?float $rescoreQueryWeight = null;
     private ?string $scoreMode = null;
 
     use ArrayFilterTrait;
@@ -43,23 +41,15 @@ class HasChildQuery implements QueryInterface
 
         return $this->filter(
             [
-                'has_child' => [
-                    'type' => $this->type,
-                    'query' => $this->query->build(),
-                    'ignore_unmapped' => $this->ignoreUnmapped,
-                    'max_children' => $this->maxChildren,
-                    'min_children' => $this->minChildren,
+                'window_size' => $this->windowSize,
+                'query' => [
+                    'rescore_query' => $this->query->build(),
                     'score_mode' => $this->scoreMode,
-                ],
-            ],
+                    'query_weight' => $this->queryWeight,
+                    'rescore_query_weight' => $this->rescoreQueryWeight,
+                ]
+            ]
         );
-    }
-
-    public function setType(string $type): self
-    {
-        $this->type = $type;
-
-        return $this;
     }
 
     public function setQuery(QueryInterface $query): self
@@ -69,23 +59,23 @@ class HasChildQuery implements QueryInterface
         return $this;
     }
 
-    public function setIgnoreUnmapped(bool $ignoreUnmapped): self
+    public function setWindowSize(int $windowSize): self
     {
-        $this->ignoreUnmapped = $ignoreUnmapped;
+        $this->windowSize = $windowSize;
 
         return $this;
     }
 
-    public function setMaxChildren(int $maxChildren): self
+    public function setQueryWeight(float $queryWeight): self
     {
-        $this->maxChildren = $maxChildren;
+        $this->queryWeight = $queryWeight;
 
         return $this;
     }
 
-    public function setMinChildren(int $minChildren): self
+    public function setRescoreQueryWeight(float $rescoreQueryWeight): self
     {
-        $this->minChildren = $minChildren;
+        $this->rescoreQueryWeight = $rescoreQueryWeight;
 
         return $this;
     }

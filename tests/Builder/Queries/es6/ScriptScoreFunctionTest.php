@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ElasticORM\Tests\Builder\Queries\es6;
 
+use ElasticORM\Builder\Queries\es6\Script;
 use ElasticORM\Builder\Queries\es6\ScriptScoreFunction;
 use ElasticORM\Builder\Queries\es6\TermQuery;
 use ElasticORM\Exception\MissingRequiredFieldException;
@@ -33,12 +34,16 @@ class ScriptScoreFunctionTest extends TestCase
             'weight' => 2.4,
         ];
 
+        $script = (new Script())
+            ->setSource(Script::SOURCE_INLINE)
+            ->setScript('2 * params.a')
+            ->setParams(['a' => 3]);
+
         $filter = (new TermQuery())
             ->setTerm('foo', 'bar', 1.0);
 
         $scriptScoreFunction = (new ScriptScoreFunction())
-            ->setSource('2 * params.a')
-            ->setParams(['a' => 3])
+            ->setScript($script)
             ->setWeight(2.4)
             ->setFilter($filter);
 
@@ -55,8 +60,12 @@ class ScriptScoreFunctionTest extends TestCase
             ],
         ];
 
+        $script = (new Script())
+            ->setSource(Script::SOURCE_INLINE)
+            ->setScript('2');
+
         $scriptScoreFunction = (new ScriptScoreFunction())
-            ->setSource('2');
+            ->setScript($script);
 
         self::assertSame($expected, $scriptScoreFunction->build());
     }

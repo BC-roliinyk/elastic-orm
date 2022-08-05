@@ -115,7 +115,7 @@ $queryFactory = QueryFactory::getQueryObjectFactory();
 $storeFilter = $queryFactory->getQueryObject('TermQuery');
 $storeFilter->setTerm('store_id', 1000000);
 
-$boolQuery = $queryFactory->getQueryObject('BoolQuery', 'master_document');//root query
+$boolQuery = $queryFactory->getQueryObject('BoolQuery', 'master_document');
 
 $boolVariantQuery = $queryFactory->getQueryObject('BoolQuery');
 
@@ -168,10 +168,16 @@ $boolQuery->addFilter($storeFilter);
 $boolQuery->addQuery($skuPrefix);
 $boolQuery->addQuery($keywordsPrefix);
 $boolQuery->addQuery($namePrefix);
-$boolQuery->from(10);
-$boolQuery->size(10);
-$boolQuery->sort(['id']);
 
+$sort = $queryFactory->getQueryObject('Sort');
+$sort->setField('id');
+
+$productSearch = $queryFactory->getQueryObject('Search');
+$productSearch
+    ->setQuery($boolQuery)
+    ->setFrom(10)
+    ->setSize(10)
+    ->addSort($sort);
 
 
 //----------------start customer query
@@ -256,9 +262,17 @@ $documentTypeFilter = $queryFactory->getQueryObject('TermQuery');
 $documentTypeFilter->setTerm('document_type', 'customer');
 
 $customerBoolQuery->addFilter($documentTypeFilter);
-$customerBoolQuery->from(10);
-$customerBoolQuery->size(10);
-$customerBoolQuery->sort(['id']);
+
+$sort = $queryFactory->getQueryObject('Sort');
+$sort->setField('id');
+
+$customerSearch = $queryFactory->getQueryObject('Search');
+$customerSearch
+    ->setQuery($boolQuery)
+    ->setFrom(10)
+    ->setSize(10)
+    ->addSort($sort);
+
 
 //----------------------------------- build order query
 
@@ -385,7 +399,6 @@ $decayQuery->setType('gauss')->setField('created_date')->setOffset('45d')->setSc
 $functionScoreQuery->addFunction($decayQuery);
 
 $orderBoolQuery->addShould($functionScoreQuery);
-//TODO $orderBoolQuery->addShould(PostFilter)
 
 $orderBoolQuery->addFilter($storeFilter);
 
@@ -393,12 +406,8 @@ $documentTypeFilter = $queryFactory->getQueryObject('TermQuery');
 $documentTypeFilter->setTerm('document_type', 'order');
 
 $orderBoolQuery->addFilter($documentTypeFilter);
-$orderBoolQuery->from(10);
-$orderBoolQuery->size(10);
-$orderBoolQuery->sort(['id']);
 
 //start post filter query
-$postFilterQuery = $queryFactory->getQueryObject('PostFilterQuery');
 $postFilterBoolQuery = $queryFactory->getQueryObject('BoolQuery');
 $postFilterBoolQueryIncomplete = $queryFactory->getQueryObject('BoolQuery');
 $incompleteTermQuery = $queryFactory->getQueryObject('TermQuery')
@@ -410,10 +419,20 @@ $isDeletedTermQuery = $queryFactory->getQueryObject('TermQuery')
     ->setTerm('is_deleted', true, 1);
 $postFilterBoolQueryIsDeleted->addMustNot($isDeletedTermQuery);
 $postFilterBoolQuery->addMust($postFilterBoolQueryIsDeleted);
-$postFilterQuery->setQuery($postFilterBoolQuery);
 //end post filter query
 
-var_dump($boolQuery->build());
-var_dump($customerBoolQuery->build());
-var_dump($postFilterQuery->build());
-var_dump($orderBoolQuery->build());
+$sort = $queryFactory->getQueryObject('Sort');
+$sort->setField('id');
+
+$orderSearch = $queryFactory->getQueryObject('Search');
+$orderSearch
+    ->setQuery($boolQuery)
+    ->setPostFilter($postFilterBoolQuery)
+    ->setFrom(10)
+    ->setSize(10)
+    ->addSort($sort);
+
+var_dump($productSearch->build());
+var_dump($customerSearch->build());
+var_dump($postFilterBoolQuery->build());
+var_dump($orderSearch->build());
