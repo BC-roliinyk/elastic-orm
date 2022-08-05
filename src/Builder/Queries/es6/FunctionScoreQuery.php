@@ -57,26 +57,21 @@ class FunctionScoreQuery implements QueryInterface
     {
         $this->validate();
 
-        $functions = [];
-        foreach ($this->functions as $function) {
-            $functions[] = $function->build();
-        }
-
         $query = $this->query ? $this->query->build() : null;
 
-        return [
-            'function_score' => $this->filter(
-                [
+        return $this->filter(
+            [
+                'function_score' => [
                     'query' => $query,
                     'boost' => $this->boost,
                     'max_boost' => $this->maxBoost,
                     'score_mode' => $this->scoreMode,
                     'boost_mode' => $this->boostMode,
                     'min_score' => $this->minScore,
-                    'functions' => $functions,
+                    'functions' => $this->functions,
                 ],
-            ),
-        ];
+            ]
+        );
     }
 
     public function setQuery(QueryInterface $query): self
@@ -130,7 +125,7 @@ class FunctionScoreQuery implements QueryInterface
 
     public function addFunction(FunctionInterface $function): self
     {
-        $this->functions[] = $function;
+        $this->functions[] = $function->build();
 
         return $this;
     }

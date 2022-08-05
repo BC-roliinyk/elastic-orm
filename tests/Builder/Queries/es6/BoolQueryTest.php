@@ -40,8 +40,6 @@ class BoolQueryTest extends TestCase
     public function testAddFilterPassesBuiltValueToQueryTreeBuilder()
     {
         $builder = self::createMock(QueryTreeBuilder::class);
-        $builder->expects(self::once())->method('addArrayParam')->with(['foo' => 'bar']);
-
         $query = new BoolQuery($builder);
 
         $should = self::createMock(QueryInterface::class);
@@ -74,26 +72,6 @@ class BoolQueryTest extends TestCase
         $should->expects(self::once())->method('build')->willReturn(['foo' => 'bar']);
 
         $query->addQuery($should);
-    }
-
-    public function testFromPassesRootParamToQueryTreeBuilder()
-    {
-        $builder = self::createMock(QueryTreeBuilder::class);
-        $builder->expects(self::once())->method('addRootParameter')->with('from', 1);
-
-        $query = new BoolQuery($builder);
-
-        $query->from(1);
-    }
-
-    public function testSizePassesRootParamToQueryTreeBuilder()
-    {
-        $builder = self::createMock(QueryTreeBuilder::class);
-        $builder->expects(self::once())->method('addRootParameter')->with('size', 1);
-
-        $query = new BoolQuery($builder);
-
-        $query->size(1);
     }
 
     public function testMinimumShouldMatchPassesParamToQueryTreeBuilder()

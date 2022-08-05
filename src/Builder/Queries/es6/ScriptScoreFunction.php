@@ -8,13 +8,12 @@ use ElasticORM\Builder\Interfaces\QueryInterface;
 class ScriptScoreFunction implements FunctionInterface
 {
     private const REQUIRED_FIELDS = [
-        'source',
+        'script',
     ];
 
     private const VALID_FIELD_VALUES = [];
 
-    private string $source;
-    private ?array $params = null;
+    private Script $script;
     private ?float $weight = null;
     private ?QueryInterface $filter = null;
 
@@ -31,26 +30,16 @@ class ScriptScoreFunction implements FunctionInterface
             [
                 'filter' => $filter,
                 'script_score' => [
-                    'script' => [
-                        'source' => $this->source,
-                        'params' => $this->params,
-                    ],
+                    'script' => $this->script->build(),
                 ],
                 'weight' => $this->weight,
             ]
         );
     }
 
-    public function setSource(string $source): self
+    public function setScript(Script $script): self
     {
-        $this->source = $source;
-
-        return $this;
-    }
-
-    public function setParams(array $params): self
-    {
-        $this->params = $params;
+        $this->script = $script;
 
         return $this;
     }

@@ -10,16 +10,19 @@ use ElasticORM\Builder\Queries\es6\FieldValueFactorFunction;
 use ElasticORM\Builder\Queries\es6\FunctionScoreQuery;
 use ElasticORM\Builder\Queries\es6\HasChildQuery;
 use ElasticORM\Builder\Queries\es6\HasParentQuery;
-use ElasticORM\Builder\Queries\es6\PostFilterQuery;
 use ElasticORM\Builder\Queries\es6\PrefixQuery;
 use ElasticORM\Builder\Queries\es6\RandomScoreFunction;
+use ElasticORM\Builder\Queries\es6\Rescore;
+use ElasticORM\Builder\Queries\es6\Script;
 use ElasticORM\Builder\Queries\es6\ScriptScoreFunction;
 use ElasticORM\Builder\Queries\es6\SimpleQueryString;
+use ElasticORM\Builder\Queries\es6\Sort;
 use ElasticORM\Builder\Queries\es6\TermQuery;
 use ElasticORM\Builder\Queries\es6\TermsQuery;
 use ElasticORM\Builder\Queries\es6\RangeQuery;
 use ElasticORM\Builder\Queries\es6\WeightFunction;
 use ElasticORM\Builder\QueryTreeBuilder;
+use ElasticORM\Builder\Search;
 
 class Es6QueryFactory implements QueryFactoryInterface
 {
@@ -44,8 +47,6 @@ class Es6QueryFactory implements QueryFactoryInterface
                 return new HasChildQuery();
             case 'HasParentQuery':
                 return new HasParentQuery();
-            case 'PostFilterQuery':
-                return new PostFilterQuery();
             case 'PrefixQuery':
                 return new PrefixQuery();
             case 'FunctionScoreQuery':
@@ -60,6 +61,14 @@ class Es6QueryFactory implements QueryFactoryInterface
                 return new ScriptScoreFunction();
             case 'WeightFunction':
                 return new WeightFunction();
+            case 'Search':
+                return new Search();
+            case 'Rescore':
+                return new Rescore();
+            case 'Script':
+                return new Script();
+            case 'Sort':
+                return new Sort();
             default:
                 throw new \Exception('Query Class' . $queryType . 'not found');
         }
