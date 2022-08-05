@@ -54,6 +54,7 @@ class Search implements QueryInterface
                 'from' => $this->from,
                 'size' => $this->size,
                 'sort' => $this->sorts,
+                '_source' => $this->source,
                 'script_fields' => $this->scriptFields,
                 'docvalue_fields' => $this->docValueFields,
                 'post_filter' => $postFilter,
@@ -106,10 +107,8 @@ class Search implements QueryInterface
     {
         $this->source = $this->filter(
             [
-                '_source' => [
-                    'includes' => $includes,
-                    'excludes' => $excludes,
-                ],
+                'includes' => $includes,
+                'excludes' => $excludes,
             ]
         );
 

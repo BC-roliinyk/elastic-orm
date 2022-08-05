@@ -29,6 +29,14 @@ class SearchTest extends TestCase
             'sort' => [
                 'baz',
             ],
+            '_source' => [
+                'includes' => [
+                    'foo*',
+                ],
+                'excludes' => [
+                    'foobar',
+                ],
+            ],
             'script_fields' => [
                 'qux' => [
                     'script' => [
@@ -94,6 +102,7 @@ class SearchTest extends TestCase
             ->setFrom(0)
             ->setSize(5)
             ->addSort($sort)
+            ->setSource(['foo*'], ['foobar'])
             ->addScriptField('qux', $script)
             ->setDocValueFields(['foo', 'bar'])
             ->setPostFilter($query)
