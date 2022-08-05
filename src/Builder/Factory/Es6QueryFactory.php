@@ -21,7 +21,7 @@ use ElasticORM\Builder\Queries\es6\TermQuery;
 use ElasticORM\Builder\Queries\es6\TermsQuery;
 use ElasticORM\Builder\Queries\es6\RangeQuery;
 use ElasticORM\Builder\Queries\es6\WeightFunction;
-use ElasticORM\Builder\QueryTreeBuilder;
+use ElasticORM\Builder\BoolQueryTreeBuilder;
 use ElasticORM\Builder\Search;
 
 class Es6QueryFactory implements QueryFactoryInterface
@@ -29,12 +29,12 @@ class Es6QueryFactory implements QueryFactoryInterface
     /**
      * @throws \Exception
      */
-    public function getQueryObject(string $queryType, string $entityType = null): QueryInterface
+    public function getQueryObject(string $queryType): QueryInterface
     {
-        $queryTreeBuilder = $this->getQueryTreeBuilderObject($queryType, $entityType);
+
         switch ($queryType) {
             case 'BoolQuery':
-                return new BoolQuery($queryTreeBuilder);
+                return new BoolQuery(new BoolQueryTreeBuilder());
             case 'SimpleQueryString':
                 return new SimpleQueryString();
             case 'TermQuery':
@@ -72,14 +72,5 @@ class Es6QueryFactory implements QueryFactoryInterface
             default:
                 throw new \Exception('Query Class' . $queryType . 'not found');
         }
-    }
-
-    public function getQueryTreeBuilderObject(string $queryType, ?string $entityType): QueryTreeBuilder
-    {
-        switch ($queryType) {
-            case 'BoolQuery':
-                return new QueryTreeBuilder('bool', $entityType);
-        }
-        return new QueryTreeBuilder($queryType, $entityType);
     }
 }
